@@ -5,6 +5,7 @@ import { toast } from "sonner";
 
 import AddSavingGoalModal from "@/components/savingGoal/AddSavingGoalModal";
 import AddDepositModal from "@/components/savingGoal/AddDepositModal";
+import DepositHistoryModal from "@/components/savingGoal/DepositHistoryModal";
 import SavingGoalCard from "@/components/savingGoal/SavingGoalCard";
 
 import { useSavingGoals } from "@/hooks/useSavingGoals";
@@ -12,15 +13,19 @@ import { useSavingDeposits } from "@/hooks/useSavingDeposits";
 
 import type { SavingGoal } from "@/types/savingGoal";
 
+interface SavingGoalItemProps {
+  goal: SavingGoal;
+  onDeposit: (goal: SavingGoal) => void;
+  onHistory: (goal: SavingGoal) => void;
+  onDelete: (goal: SavingGoal) => void;
+}
+
 function SavingGoalItem({
   goal,
   onDeposit,
+  onHistory,
   onDelete,
-}: {
-  goal: SavingGoal;
-  onDeposit: (goal: SavingGoal) => void;
-  onDelete: (goal: SavingGoal) => void;
-}) {
+}: SavingGoalItemProps) {
   const { deposits } = useSavingDeposits(goal.id ?? "");
 
   return (
@@ -28,6 +33,7 @@ function SavingGoalItem({
       goal={goal}
       deposits={deposits}
       onDeposit={onDeposit}
+      onHistory={onHistory}
       onDelete={onDelete}
     />
   );
@@ -47,6 +53,9 @@ export default function TargetTabunganPage() {
   const [openDeposit, setOpenDeposit] =
     useState(false);
 
+  const [openHistory, setOpenHistory] =
+    useState(false);
+
   const [selectedGoal, setSelectedGoal] =
     useState<SavingGoal | null>(null);
 
@@ -55,18 +64,27 @@ export default function TargetTabunganPage() {
   ) {
     if (!goal.id) return;
 
-    if (
-      !window.confirm(
-        `Hapus target "${goal.name}"?`
-      )
-    )
-      return;
-
-    await removeSavingGoal(goal.id);
-
-    toast.success(
-      "Target berhasil dihapus."
+    const confirmDelete = window.confirm(
+      `Hapus target "${goal.name}"?`
     );
+
+    if (!confirmDelete) return;
+
+    try {
+      await removeSavingGoal(goal.id);
+
+      toast.success(
+        "Target berhasil dihapus."
+      );
+
+      await reload();
+    } catch (error) {
+      console.error(error);
+
+      toast.error(
+        "Gagal menghapus target."
+      );
+    }
   }
 
   if (loading) {
@@ -80,7 +98,9 @@ export default function TargetTabunganPage() {
   return (
     <>
       <div className="space-y-6">
+
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+
           <div>
             <h1 className="text-3xl font-bold">
               Target Tabungan
@@ -92,28 +112,32 @@ export default function TargetTabunganPage() {
           </div>
 
           <button
-            onClick={() =>
-              setOpenAdd(true)
-            }
+            onClick={() => setOpenAdd(true)}
             className="rounded-xl bg-blue-600 px-5 py-3 text-white hover:bg-blue-700"
           >
             + Tambah Target
           </button>
+
         </div>
 
         {savingGoals.length === 0 ? (
+
           <div className="rounded-2xl border bg-white p-10 text-center">
+
             <h2 className="text-xl font-semibold">
               Belum Ada Target
             </h2>
 
             <p className="mt-2 text-gray-500">
-              Tambahkan target tabungan
-              pertamamu.
+              Tambahkan target tabungan pertamamu.
             </p>
+
           </div>
+
         ) : (
+
           <div className="grid gap-6 lg:grid-cols-2">
+
             {savingGoals.map((goal) => (
               <SavingGoalItem
                 key={goal.id}
@@ -122,18 +146,23 @@ export default function TargetTabunganPage() {
                   setSelectedGoal(goal);
                   setOpenDeposit(true);
                 }}
+                onHistory={(goal) => {
+                  setSelectedGoal(goal);
+                  setOpenHistory(true);
+                }}
                 onDelete={handleDelete}
               />
             ))}
+
           </div>
+
         )}
+
       </div>
 
       <AddSavingGoalModal
         open={openAdd}
-        onClose={() =>
-          setOpenAdd(false)
-        }
+        onClose={() => setOpenAdd(false)}
         onSuccess={reload}
       />
 
@@ -145,6 +174,15 @@ export default function TargetTabunganPage() {
           setSelectedGoal(null);
         }}
         onSuccess={reload}
+      />
+
+      <DepositHistoryModal
+        open={openHistory}
+        goal={selectedGoal}
+        onClose={() => {
+          setOpenHistory(false);
+          setSelectedGoal(null);
+        }}
       />
     </>
   );

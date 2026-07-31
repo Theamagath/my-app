@@ -8,6 +8,7 @@ interface SavingGoalCardProps {
   deposits: SavingDeposit[];
 
   onDeposit?: (goal: SavingGoal) => void;
+  onHistory?: (goal: SavingGoal) => void;
   onEdit?: (goal: SavingGoal) => void;
   onDelete?: (goal: SavingGoal) => void;
 }
@@ -16,6 +17,7 @@ export default function SavingGoalCard({
   goal,
   deposits,
   onDeposit,
+  onHistory,
   onEdit,
   onDelete,
 }: SavingGoalCardProps) {
@@ -104,33 +106,34 @@ export default function SavingGoalCard({
 
       {/* Tombol */}
       <div className="mt-6 flex flex-wrap gap-2">
-        <button
-          onClick={() =>
-            onDeposit?.(goal)
-          }
-          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-        >
-          + Setoran
-        </button>
+  <button
+    onClick={() => onDeposit?.(goal)}
+    className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+  >
+    + Setoran
+  </button>
 
-        <button
-          onClick={() =>
-            onEdit?.(goal)
-          }
-          className="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
-        >
-          Edit
-        </button>
+  <button
+    onClick={() => onHistory?.(goal)}
+    className="rounded-lg bg-slate-700 px-4 py-2 text-white hover:bg-slate-800"
+  >
+    Riwayat
+  </button>
 
-        <button
-          onClick={() =>
-            onDelete?.(goal)
-          }
-          className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
-        >
-          Hapus
-        </button>
-      </div>
+  <button
+    onClick={() => onEdit?.(goal)}
+    className="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
+  >
+    Edit
+  </button>
+
+  <button
+    onClick={() => onDelete?.(goal)}
+    className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+  >
+    Hapus
+  </button>
+</div>
     </div>
   );
 }
