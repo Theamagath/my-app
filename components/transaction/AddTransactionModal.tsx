@@ -88,27 +88,27 @@ export default function AddTransactionModal({
     }
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="w-full max-w-lg rounded-xl bg-white p-6 shadow-xl">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="text-2xl font-bold">
-            Tambah Transaksi
-          </h2>
+ return (
+  <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 sm:items-center sm:p-4">
+    <div className="max-h-[90vh] w-full overflow-y-auto rounded-t-3xl bg-white p-5 shadow-xl sm:max-w-lg sm:rounded-2xl sm:p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h2 className="text-xl font-bold sm:text-2xl">
+          Tambah Transaksi
+        </h2>
 
-          <button
-            onClick={onClose}
-            className="text-2xl text-gray-500 transition hover:text-black"
-          >
-            ×
-          </button>
-        </div>
-
-        <TransactionForm
-          submitText="Simpan Transaksi"
-          onSubmit={handleSubmit}
-        />
+        <button
+          onClick={onClose}
+          className="rounded-lg p-2 text-gray-500 transition hover:bg-gray-100 hover:text-black"
+        >
+          ✕
+        </button>
       </div>
+
+      <TransactionForm
+        submitText="Simpan Transaksi"
+        onSubmit={handleSubmit}
+      />
     </div>
-  );
+  </div>
+);
 }

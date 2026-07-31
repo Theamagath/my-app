@@ -1,6 +1,6 @@
 export default function Navbar() {
   return (
-    <header className="sticky top-0 z-40 flex h-16 items-center justify-between border-b bg-white/80 px-8 backdrop-blur">
+    <header className="sticky top-0 z-20 hidden h-16 items-center justify-between border-b bg-white/80 px-8 backdrop-blur lg:flex">
       <div>
         <h2 className="text-xl font-bold">
           Selamat Datang 👋

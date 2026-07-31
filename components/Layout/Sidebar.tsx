@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { CalendarDays } from "lucide-react";
+import { PiggyBank } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -9,6 +11,7 @@ import {
   Wallet,
   FileText,
   Settings,
+  X,
 } from "lucide-react";
 
 const menus = [
@@ -23,6 +26,11 @@ const menus = [
     icon: ReceiptText,
   },
   {
+    name: "Target Tabungan",
+    href: "/dashboard/tabungan",
+    icon: PiggyBank,
+  },
+  {
     name: "Kategori",
     href: "/dashboard/kategori",
     icon: Tags,
@@ -31,6 +39,11 @@ const menus = [
     name: "Budget",
     href: "/dashboard/budget",
     icon: Wallet,
+  },
+  {
+    name: "Tagihan",
+    href: "/dashboard/tagihan",
+    icon: CalendarDays,
   },
   {
     name: "Laporan",
@@ -44,64 +57,110 @@ const menus = [
   },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  open: boolean;
+  onClose: () => void;
+}
+
+export default function Sidebar({
+  open,
+  onClose,
+}: SidebarProps) {
   const pathname = usePathname();
 
   return (
-    <aside className="fixed left-0 top-0 flex h-screen w-64 flex-col bg-slate-900 text-white">
-      <div className="border-b border-slate-800 p-6">
-        <h1 className="text-2xl font-bold">
-          Yosua
-          <span className="text-blue-400">
-            Finance
-          </span>
-        </h1>
-      </div>
+    <>
+      {/* Overlay Mobile */}
+      {open && (
+        <div
+          onClick={onClose}
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+        />
+      )}
 
-      <nav className="flex-1 space-y-2 p-4">
-        {menus.map((menu) => {
-          const Icon = menu.icon;
+      <aside
+        className={`
+          fixed left-0 top-0 z-50
+          flex h-screen w-64 flex-col
+          bg-slate-900 text-white
+          transition-transform duration-300
 
-          const active =
-         menu.href === "/dashboard"
-         ? pathname === "/dashboard"
-         : pathname === menu.href ||
-           pathname.startsWith(menu.href + "/");
+          ${
+            open
+              ? "translate-x-0"
+              : "-translate-x-full"
+          }
 
-          return (
-            <Link
-              key={menu.href}
-              href={menu.href}
-              className={`flex items-center gap-3 rounded-xl px-4 py-3 transition ${
-                active
-                  ? "bg-blue-600 text-white shadow-lg"
-                  : "text-slate-300 hover:bg-slate-800 hover:text-white"
-              }`}
-            >
-              <Icon size={20} />
-              <span>{menu.name}</span>
-            </Link>
-          );
-        })}
-      </nav>
+          lg:translate-x-0
+        `}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between border-b border-slate-800 p-6">
+          <h1 className="text-2xl font-bold">
+            Yosua
+            <span className="text-blue-400">
+              Finance
+            </span>
+          </h1>
 
-      <div className="border-t border-slate-800 p-5">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-bold">
-            Y
-          </div>
+          <button
+            onClick={onClose}
+            className="lg:hidden"
+          >
+            <X size={22} />
+          </button>
+        </div>
 
-          <div>
-            <p className="font-semibold">
-              Yosua
-            </p>
+        {/* Menu */}
+        <nav className="flex-1 space-y-2 p-4">
+          {menus.map((menu) => {
+            const Icon = menu.icon;
 
-            <p className="text-xs text-slate-400">
-              Personal Finance
-            </p>
+            const active =
+              menu.href === "/dashboard"
+                ? pathname === "/dashboard"
+                : pathname === menu.href ||
+                  pathname.startsWith(
+                    menu.href + "/"
+                  );
+
+            return (
+              <Link
+                key={menu.href}
+                href={menu.href}
+                onClick={onClose}
+                className={`flex items-center gap-3 rounded-xl px-4 py-3 transition ${
+                  active
+                    ? "bg-blue-600 text-white shadow-lg"
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
+                }`}
+              >
+                <Icon size={20} />
+                <span>{menu.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* Footer */}
+        <div className="border-t border-slate-800 p-5">
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-bold">
+              Y
+            </div>
+
+            <div>
+              <p className="font-semibold">
+                Yosua
+              </p>
+
+              <p className="text-xs text-slate-400">
+                Personal Finance
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 }
