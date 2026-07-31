@@ -4,6 +4,6 @@ export interface Transaction {
   amount: number;
   type: "income" | "expense";
   category: string;
-  date: Date;
-  createdAt: Date;
+  date: string;
+  createdAt?: any;
 }
