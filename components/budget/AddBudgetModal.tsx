@@ -2,11 +2,9 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-
 import BudgetForm from "./BudgetForm";
-
 import { useBudgets } from "@/hooks/useBudgets";
-import type { Budget } from "@/types/budget";
+import type { Budget } from "../../types/budget";
 
 interface AddBudgetModalProps {
   onSuccess: () => void | Promise<void>;
