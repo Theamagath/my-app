@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
-
+import EditSavingGoalModal from "@/components/savingGoal/EditSavingGoalModal";
 import AddSavingGoalModal from "@/components/savingGoal/AddSavingGoalModal";
 import AddDepositModal from "@/components/savingGoal/AddDepositModal";
 import DepositHistoryModal from "@/components/savingGoal/DepositHistoryModal";
@@ -17,6 +17,7 @@ interface SavingGoalItemProps {
   goal: SavingGoal;
   onDeposit: (goal: SavingGoal) => void;
   onHistory: (goal: SavingGoal) => void;
+  onEdit: (goal: SavingGoal) => void;
   onDelete: (goal: SavingGoal) => void;
 }
 
@@ -24,6 +25,7 @@ function SavingGoalItem({
   goal,
   onDeposit,
   onHistory,
+  onEdit,
   onDelete,
 }: SavingGoalItemProps) {
   const { deposits } = useSavingDeposits(goal.id ?? "");
@@ -34,6 +36,7 @@ function SavingGoalItem({
       deposits={deposits}
       onDeposit={onDeposit}
       onHistory={onHistory}
+      onEdit={onEdit}
       onDelete={onDelete}
     />
   );
@@ -54,6 +57,9 @@ export default function TargetTabunganPage() {
     useState(false);
 
   const [openHistory, setOpenHistory] =
+    useState(false);
+
+  const [openEdit, setOpenEdit] =
     useState(false);
 
   const [selectedGoal, setSelectedGoal] =
@@ -140,18 +146,22 @@ export default function TargetTabunganPage() {
 
             {savingGoals.map((goal) => (
               <SavingGoalItem
-                key={goal.id}
-                goal={goal}
-                onDeposit={(goal) => {
-                  setSelectedGoal(goal);
-                  setOpenDeposit(true);
-                }}
-                onHistory={(goal) => {
-                  setSelectedGoal(goal);
-                  setOpenHistory(true);
-                }}
-                onDelete={handleDelete}
-              />
+  key={goal.id}
+  goal={goal}
+  onDeposit={(goal) => {
+    setSelectedGoal(goal);
+    setOpenDeposit(true);
+  }}
+  onHistory={(goal) => {
+    setSelectedGoal(goal);
+    setOpenHistory(true);
+  }}
+  onEdit={(goal) => {
+    setSelectedGoal(goal);
+    setOpenEdit(true);
+  }}
+  onDelete={handleDelete}
+/>
             ))}
 
           </div>
@@ -184,6 +194,15 @@ export default function TargetTabunganPage() {
           setSelectedGoal(null);
         }}
       />
+      <EditSavingGoalModal
+  open={openEdit}
+  goal={selectedGoal}
+  onClose={() => {
+    setOpenEdit(false);
+    setSelectedGoal(null);
+  }}
+  onSuccess={reload}
+/>
     </>
   );
 }

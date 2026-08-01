@@ -1,7 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
+import { useRouter } from "next/navigation";
+
+import { useAuth } from "@/hooks/useAuth";
+
 import FloatingActionButton from "@/components/Layout/FloatingActionButton";
 import Sidebar from "@/components/Layout/Sidebar";
 import Navbar from "@/components/Layout/Navbar";
@@ -11,14 +15,46 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const router = useRouter();
+
+  const { user, loading } = useAuth();
+
   const [sidebarOpen, setSidebarOpen] =
     useState(false);
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [loading, user, router]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-slate-100">
+        <div className="text-center">
+          <div className="mx-auto mb-5 h-12 w-12 animate-spin rounded-full border-4 border-blue-600 border-t-transparent" />
+
+          <h2 className="text-xl font-semibold">
+            Memuat...
+          </h2>
+
+          <p className="mt-2 text-gray-500">
+            Mengecek autentikasi...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-slate-100">
       <Sidebar
         open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
+        onClose={() =>
+          setSidebarOpen(false)
+        }
       />
 
       <main className="min-h-screen lg:ml-64">
@@ -46,6 +82,7 @@ export default function DashboardLayout({
         <div className="p-4 md:p-6 lg:p-8">
           {children}
         </div>
+
         <FloatingActionButton />
       </main>
     </div>

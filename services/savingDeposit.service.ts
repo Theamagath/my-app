@@ -5,6 +5,7 @@ import {
   doc,
   getDocs,
   query,
+  updateDoc,
   where,
 } from "firebase/firestore";
 
@@ -13,7 +14,9 @@ import type { SavingDeposit } from "@/types/savingDeposit";
 
 const COLLECTION_NAME = "saving_deposits";
 
-// Ambil semua setoran berdasarkan goal
+// ===============================
+// Ambil semua setoran berdasarkan target
+// ===============================
 export async function getSavingDeposits(
   goalId: string
 ): Promise<SavingDeposit[]> {
@@ -26,11 +29,16 @@ export async function getSavingDeposits(
 
   return snapshot.docs.map((docItem) => ({
     id: docItem.id,
-    ...(docItem.data() as Omit<SavingDeposit, "id">),
+    ...(docItem.data() as Omit<
+      SavingDeposit,
+      "id"
+    >),
   }));
 }
 
-// Tambah setoran
+// ===============================
+// Tambah Setoran
+// ===============================
 export async function addSavingDeposit(
   deposit: Omit<SavingDeposit, "id">
 ): Promise<void> {
@@ -40,7 +48,24 @@ export async function addSavingDeposit(
   );
 }
 
-// Hapus setoran
+// ===============================
+// Update Setoran
+// ===============================
+export async function updateSavingDeposit(
+  id: string,
+  deposit: Omit<SavingDeposit, "id">
+): Promise<void> {
+  await updateDoc(
+    doc(db, COLLECTION_NAME, id),
+    {
+      ...deposit,
+    }
+  );
+}
+
+// ===============================
+// Hapus Setoran
+// ===============================
 export async function deleteSavingDeposit(
   id: string
 ): Promise<void> {
