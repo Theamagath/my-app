@@ -35,7 +35,7 @@ export default function DailyBudgetProgress() {
       </h2>
 
       <div className="space-y-6">
-        {progress.map((item) => {
+        {progress.map((item, index) => {
           const color =
             item.status === "danger"
               ? "bg-red-500"
@@ -44,7 +44,7 @@ export default function DailyBudgetProgress() {
               : "bg-green-500";
 
           return (
-            <div key={item.categoryId}>
+            <div key={`${item.categoryId}-${item.categoryName}-${index}`}>
               <div className="mb-2 flex justify-between">
                 <span className="font-semibold">
                   {item.categoryName}
